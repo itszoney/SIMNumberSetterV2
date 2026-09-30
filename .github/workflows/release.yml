@@ -35,8 +35,7 @@ jobs:
           echo "ANDROID_HOME=$ANDROID_HOME"
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           ls "$ANDROID_HOME" | head -n 20
-          which apksigner || echo "apksigner not on PATH"
-          which zipalign || echo "zipalign not on PATH"
+          find "$ANDROID_HOME/build-tools" -maxdepth 1 -type d | sort -V | tail -n 3
 
       - name: Grant execute on gradlew
         run: chmod +x gradlew
@@ -66,10 +65,6 @@ jobs:
         id: bt
         run: |
           BUILD_TOOLS=$(ls -d "$ANDROID_HOME/build-tools/"* 2>/dev/null | sort -V | tail -n 1)
-          if [ -z "$BUILD_TOOLS" ]; then
-            BUILD_TOOLS=$(find "$ANDROID_HOME" -type d -name "build-tools" | head -n 1)
-            BUILD_TOOLS=$(ls -d "$BUILD_TOOLS/"* | sort -V | tail -n 1)
-          fi
           if [ -z "$BUILD_TOOLS" ]; then
             echo "No build-tools found in $ANDROID_HOME"
             find "$ANDROID_HOME" -maxdepth 2 -type d | head -n 40
