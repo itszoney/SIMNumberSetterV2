@@ -20,18 +20,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6.0.1
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
 
       - name: Grant execute on gradlew
         run: chmod +x gradlew
@@ -133,7 +135,7 @@ jobs:
           cat SHA256SUMS.txt
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v3.0.3
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           name: SIMNumberSetter ${{ steps.tag.outputs.tag }}
