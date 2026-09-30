@@ -34,8 +34,14 @@ jobs:
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          ls "$ANDROID_HOME" | head -n 20
-          find "$ANDROID_HOME/build-tools" -maxdepth 1 -type d | sort -V | tail -n 3
+          ls "$ANDROID_HOME" | head -n 20 || true
+          find "$ANDROID_HOME/build-tools" -maxdepth 1 -type d | sort -V | tail -n 3 || true
+
+      - name: Accept Android SDK licenses
+        run: |
+          SDKMANAGER=$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | sort -V | tail -n 1)
+          echo "Using: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
 
       - name: Grant execute on gradlew
         run: chmod +x gradlew
@@ -64,10 +70,10 @@ jobs:
       - name: Resolve build-tools
         id: bt
         run: |
-          BUILD_TOOLS=$(ls -d "$ANDROID_HOME/build-tools/"* 2>/dev/null | sort -V | tail -n 1)
+          BUILD_TOOLS=$(ls -d "$ANDROID_HOME/build-tools/"* 2>/dev/null | grep -Ev 'rc|alpha|beta' | sort -V | tail -n 1)
           if [ -z "$BUILD_TOOLS" ]; then
             echo "No build-tools found in $ANDROID_HOME"
-            find "$ANDROID_HOME" -maxdepth 2 -type d | head -n 40
+            find "$ANDROID_HOME" -maxdepth 2 -type d | head -n 40 || true
             exit 1
           fi
           echo "dir=$BUILD_TOOLS" >> "$GITHUB_OUTPUT"
