@@ -17,6 +17,8 @@ fun Intent.applySecurity(context: Context) {
     ))
 }
 
+// Runs inside com.android.phone on API 26+, so the type-safe API 33 overload can't be used
+@Suppress("DEPRECATION")
 fun Intent.checkSecurity(moduleUid: Int): Boolean {
     val pendingIntent = getParcelableExtra<PendingIntent>(KEY_PENDING_INTENT) ?: return false
     return pendingIntent.creatorUid == moduleUid
