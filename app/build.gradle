@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace 'com.kieronquinn.app.simnumbersetter'
     compileSdk 37
 
     defaultConfig {
