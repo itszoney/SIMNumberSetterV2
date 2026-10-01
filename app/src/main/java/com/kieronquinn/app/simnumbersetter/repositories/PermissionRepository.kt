@@ -3,7 +3,6 @@ package com.kieronquinn.app.simnumbersetter.repositories
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Process
-import android.os.UserHandle
 import android.util.Log
 import com.kieronquinn.app.simnumbersetter.BuildConfig
 import com.kieronquinn.app.simnumbersetter.repositories.PermissionRepository.Companion.PERMISSION_DUMP
@@ -33,7 +32,7 @@ class PermissionRepositoryImpl(
     }
 
     private suspend fun runGrantCommand(): Shell.Result {
-        val userId = UserHandle.getUserId(Process.myUid())
+        val userId = Process.myUid() / 100000 // PER_USER_RANGE; UserHandle.getUserId is hidden API
         return rootRepository.runRootCommand(
             "pm grant --user $userId ${BuildConfig.APPLICATION_ID} $PERMISSION_DUMP"
         )
