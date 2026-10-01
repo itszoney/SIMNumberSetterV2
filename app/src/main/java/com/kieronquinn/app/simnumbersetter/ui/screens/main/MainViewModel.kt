@@ -95,11 +95,21 @@ class MainViewModelImpl(
 
     private fun load() = viewModelScope.launch {
         _state.value = State.Loading(LoadType.LOADING)
-        if (!rootRepository.isRooted()) {
+        val rooted = try {
+            rootRepository.isRooted()
+        } catch (e: Exception) {
+            false
+        }
+        if (!rooted) {
             _state.value = State.Error(ErrorType.NO_ROOT)
             return@launch
         }
-        if (!permissionRepository.grantDumpPermission()) {
+        val granted = try {
+            permissionRepository.grantDumpPermission()
+        } catch (e: Exception) {
+            false
+        }
+        if (!granted) {
             _state.value = State.Error(ErrorType.NO_PERMISSION)
             return@launch
         }
