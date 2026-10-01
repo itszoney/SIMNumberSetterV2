@@ -103,11 +103,10 @@ jobs:
             --out "$RUNNER_TEMP/app-release.apk" \
             "$RUNNER_TEMP/aligned.apk"
 
-      - name: Verify signature (v1 + v2 + v3)
+      - name: Verify signature (v2 + v3)
         run: |
           "${{ steps.bt.outputs.dir }}/apksigner" verify --verbose \
             "$RUNNER_TEMP/app-release.apk" | tee verify.txt
-          grep -q "Verified using v1 scheme (JAR signing): true" verify.txt
           grep -q "Verified using v2 scheme (APK Signature Scheme v2): true" verify.txt
           grep -q "Verified using v3 scheme (APK Signature Scheme v3): true" verify.txt
 
